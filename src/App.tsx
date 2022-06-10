@@ -3,24 +3,13 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Index from './routes/Index';
 import ErrorPage from './components/ErrorPage';
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Waitings from './routes/Waitings';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
-
-  const generatePageTree = (tab: any) : any => {
-    return tab.map((route:any, index: number) => {
-      return (
-        <React.Fragment key={index}>
-          <Route path={route.path} element={route.element}/>
-          {route.otherPages &&
-            generatePageTree(route.otherPages)
-          }
-        </React.Fragment>
-      )
-    });
-  }
+  let location = useLocation();
+  const [breadcrumbs, setBreadcrumbs] = useState<String | null>(null);
 
   const routes = [
     {
@@ -42,18 +31,38 @@ function App() {
     }
   ]
 
+  useEffect(() => {
+    const localization = String(
+      routes.find((item:any) => item.path === location.pathname)?.pageName ||
+      routes[0].pageName+" -> "+routes[0].otherPages?.find((item: any) => item.path === location.pathname)?.pageName
+      );
+    setBreadcrumbs(localization)
+  }, [location])
+
+  const generatePageTree = (tab: any) : any => {
+    return tab.map((route:any, index: number) => {
+      return (
+        <React.Fragment key={index}>
+          <Route path={route.path} element={route.element} />
+          {route.otherPages &&
+            generatePageTree(route.otherPages)
+          }
+        </React.Fragment>
+      )
+    });
+  }
+
   return (
-    <Router>
       <div className="App">
         <Navigation/>
         <main>
+          <h5>{breadcrumbs}</h5>
           <Routes>
             {generatePageTree(routes)}
           </Routes>
         </main>
         <Footer/>
       </div>
-    </Router>
   );
 }
 
