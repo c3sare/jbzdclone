@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+    background: #252525;
+    font-family: Open Sans,sans-serif;
+    font-size: 14px;
+    color: white;
+  }
+
+.errorPage {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.errorPage h3 {
+    text-align: center;
+}
+
+.errorPage img {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+main {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1150px;
+}
