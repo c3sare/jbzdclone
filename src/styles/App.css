@@ -1,3 +1,14 @@
 .App {
     padding-top: 40px;
 }
+
+.breadcrumbs {
+    font-size: 10px;
+    color: rgb(145, 145, 145);
+    font-weight: 100;
+}
+
+.breadcrumbs a {
+    color: white;
+    text-decoration: none;
+}
