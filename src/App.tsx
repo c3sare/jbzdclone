@@ -1,20 +1,21 @@
 import "./styles/App.css";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
-import Index from "./routes/Index";
-import ErrorPage from "./components/ErrorPage";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
-import Waitings from "./routes/Waitings";
+import { Link, Route, Routes, useLocation, Location } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import MikroBlog from "./routes/MikroBlog";
-import Upload from "./routes/Upload";
+import {routes, RoutesInterface} from "./data/routes";
+
+interface BreadCrumbsInterface {
+  to: string | null,
+  name: string
+}
 
 function App() {
   let location = useLocation();
-  const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<Array<BreadCrumbsInterface>>([]);
 
   const getFullNameOfCrumb = (
-    routes: Array<{ path: string; pageName: string; otherPages: any }>,
+    routes: Array<RoutesInterface>,
     url: string
   ): any => {
     return (
@@ -33,18 +34,20 @@ function App() {
     );
   };
 
-  const createBreadCrumb = (routes: any, location: any) => {
+  const createBreadCrumb = (routes: Array<RoutesInterface>, location: Location) => {
     const arr = location.pathname.split("/");
     const url = [];
-    const splitted: any = Array.from(new Set(arr));
+    const splitted: Array<string> = Array.from(new Set(arr));
     for (let i = 0; i < splitted.length; i++) {
       if (i === splitted.length - 1) {
         if (splitted[i] === "") {
           url.push({
+            to: null,
             name: "Strona Główna",
           });
         } else {
           url.push({
+            to: null,
             name: getFullNameOfCrumb(routes, splitted[i]),
           });
         }
@@ -65,50 +68,13 @@ function App() {
     setBreadcrumbs(url);
   };
 
-  const routes = [
-    {
-      pageName: "Strona Główna",
-      path: "/",
-      element: <Index />,
-      otherPages: [
-        {
-          pageName: "Oczekujące",
-          path: "/oczekujace",
-          element: <Waitings />,
-        },
-        {
-          pageName: "Mikroblog",
-          path: "/mikroblog",
-          element: <MikroBlog />,
-          otherPages: [
-            {
-              pageName: "Mikroblog - Gorące",
-              path: "/mikroblog/gorace",
-              element: <MikroBlog />,
-            },
-          ],
-        },
-        {
-          pageName: "Dodaj",
-          path: "/upload",
-          element: <Upload />,
-        },
-      ],
-    },
-    {
-      pageName: "Błąd 404",
-      path: "*",
-      element: <ErrorPage />,
-    },
-  ];
-
   useEffect(() => {
     createBreadCrumb(routes, location);
     // eslint-disable-next-line
   }, [location]);
 
-  const generatePageTree = (tab: Array<Object>) =>
-    tab.map((route: any, index: number) => {
+  const generatePageTree = (tab: Array<RoutesInterface>) =>
+    tab.map((route:RoutesInterface, index:number) => {
       return (
         <React.Fragment key={index}>
           <Route path={route.path} element={route.element} />
@@ -123,7 +89,7 @@ function App() {
       <main>
         <h5 className="breadcrumbs">
           {breadcrumbs.map(
-            (breadcrumb: { to: string; name: string }, index: number) => (
+            (breadcrumb: BreadCrumbsInterface, index: number) => (
               <React.Fragment key={index}>
                 {breadcrumb?.to ? (
                   <Link to={breadcrumb.to}>{breadcrumb.name}</Link>

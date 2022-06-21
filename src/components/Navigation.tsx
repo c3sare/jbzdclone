@@ -1,6 +1,7 @@
 import "../styles/Navigation.css";
 import logo from "../images/logo.png";
 import coin from "../images/coin.png";
+import defaultAvatar from "../images/avatars/default.jpg";
 import {
   MdCampaign,
   MdSearch,
@@ -16,10 +17,31 @@ import {
 import { GiDiceSixFacesTwo } from "react-icons/gi";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {Category, categories} from "../data/categories";
 
 const Navigation = () => {
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
+
+  const categoryContainer = categories.map((group:Array<Category>, index: number) => (
+    <ul key={index}>
+      {group.map((category:Category, indexCategory: number) => (
+        <li key={indexCategory}>
+          <Link
+            style={
+              category.color ?
+                {color: category.color}
+              :
+                {}
+            }
+            to={category.to}
+          >
+            {category.name}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  ));
 
   return (
     <div className="nav">
@@ -54,110 +76,7 @@ const Navigation = () => {
           <span className="navLink" id="departments">
             Działy <MdArrowDropDown />
             <div className="departmentsMenu">
-              <ul>
-                <li>
-                  <Link to="/kategoria/motoryzacja">Motoryzacja</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/wiedza">Wiedza</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/humor">Humor</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/polityka">Polityka</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/dowcipy">Dowcipy</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/pasty">Pasty</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/czarnyhumor">Czarny humor</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/gry">Gry</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/pytanie">Pytanie</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/sport">Sport</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/hobby">Hobby</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/filmy">Filmy</Link>
-                </li>
-                <li>
-                  <Link to="/kategoria/ciekawostki">Ciekawostki</Link>
-                </li>
-                <hr />
-                <li>
-                  <Link to="/war">Wojna</Link>
-                </li>
-                <li>
-                  <Link to="/metal">Metale</Link>
-                </li>
-                <li>
-                  <Link to="/template">Templatki</Link>
-                </li>
-                <li>
-                  <Link to="/hobby">Hobby</Link>
-                </li>
-                <li>
-                  <Link to="/kitchen">Kuchnia</Link>
-                </li>
-                <li>
-                  <Link to="/music">Muzyka</Link>
-                </li>
-              </ul>
-              <ul>
-                <li>
-                  <b style={{ color: "darkred" }}>NSFW:</b>
-                </li>
-                <li>
-                  <Link to="/hard">Hard</Link>
-                </li>
-                <li>
-                  <Link to="/nsfw">Witam</Link>
-                </li>
-                <li>
-                  <Link to="/anime">Anime</Link>
-                </li>
-                <li>
-                  <Link to="/feet">Stopy</Link>
-                </li>
-                <li>
-                  <Link to="/furry">Furry</Link>
-                </li>
-                <li>
-                  <Link to="/other">Inne nsfw</Link>
-                </li>
-                <li>
-                  <Link to="/cosplay">Cosplay</Link>
-                </li>
-                <li>
-                  <Link to="/hardmem">Hard memy</Link>
-                </li>
-                <li>
-                  <Link to="/premium" style={{ color: "gold" }}>
-                    Premium
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/own" style={{ color: "lightblue" }}>
-                    Własne
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/own_male" style={{ color: "blueviolet" }}>
-                    Własne
-                  </Link>
-                </li>
-              </ul>
+              {categoryContainer}
             </div>
           </span>
           <Link id="coins" to="/">
@@ -214,6 +133,12 @@ const Navigation = () => {
       )}
       {showMobileMenu && (
         <div className="mobileMenuContainer">
+          <div className="loginInfo">
+            <Link to="/login">
+              <img src={defaultAvatar} alt="Avatar"/>
+              <span>Niezalogowany</span>
+            </Link>
+          </div>
           <div className="mainMenuMobileContainer">
             <Link to="/mikroblog">
               <span className="iconMenu">
@@ -257,6 +182,9 @@ const Navigation = () => {
               </span>
               <span>Ustawienia</span>
             </Link>
+          </div>
+          <div className="departmentsMenuMobile">
+            {categoryContainer}
           </div>
         </div>
       )}
