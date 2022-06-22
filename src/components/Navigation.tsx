@@ -17,31 +17,28 @@ import {
 import { GiDiceSixFacesTwo } from "react-icons/gi";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {Category, categories} from "../data/categories";
+import { Category, categories } from "../data/categories";
 
 const Navigation = () => {
   const [showSearch, setShowSearch] = useState<Boolean>(false);
   const [showMobileMenu, setShowMobileMenu] = useState<Boolean>(false);
 
-  const categoryContainer = categories.map((group:Array<Category>, index: number) => (
-    <ul key={index}>
-      {group.map((category:Category, indexCategory: number) => (
-        <li key={indexCategory}>
-          <Link
-            style={
-              category.color ?
-                {color: category.color}
-              :
-                {}
-            }
-            to={category.to}
-          >
-            {category.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  ));
+  const categoryContainer = categories.map(
+    (group: Category[], index: number) => (
+      <ul key={index}>
+        {group.map((category: Category, indexCategory: number) => (
+          <li key={indexCategory}>
+            <Link
+              style={category.color ? { color: category.color } : {}}
+              to={category.to}
+            >
+              {category.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )
+  );
 
   return (
     <div className="nav">
@@ -75,9 +72,7 @@ const Navigation = () => {
           <Link to="/upload">Dodaj</Link>
           <span className="navLink" id="departments">
             Działy <MdArrowDropDown />
-            <div className="departmentsMenu">
-              {categoryContainer}
-            </div>
+            <div className="departmentsMenu">{categoryContainer}</div>
           </span>
           <Link id="coins" to="/">
             <img
@@ -135,7 +130,7 @@ const Navigation = () => {
         <div className="mobileMenuContainer">
           <div className="loginInfo">
             <Link to="/login">
-              <img src={defaultAvatar} alt="Avatar"/>
+              <img src={defaultAvatar} alt="Avatar" />
               <span>Niezalogowany</span>
             </Link>
           </div>
@@ -183,9 +178,7 @@ const Navigation = () => {
               <span>Ustawienia</span>
             </Link>
           </div>
-          <div className="departmentsMenuMobile">
-            {categoryContainer}
-          </div>
+          <div className="departmentsMenuMobile">{categoryContainer}</div>
         </div>
       )}
     </div>

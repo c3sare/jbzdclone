@@ -3,21 +3,18 @@ import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 import { Link, Route, Routes, useLocation, Location } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import {routes, RoutesInterface} from "./data/routes";
+import { routes, RoutesInterface } from "./data/routes";
 
 interface BreadCrumbsInterface {
-  to: string | null,
-  name: string
+  to: string | null;
+  name: string;
 }
 
 function App() {
   let location = useLocation();
-  const [breadcrumbs, setBreadcrumbs] = useState<Array<BreadCrumbsInterface>>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadCrumbsInterface[]>([]);
 
-  const getFullNameOfCrumb = (
-    routes: Array<RoutesInterface>,
-    url: string
-  ): any => {
+  const getFullNameOfCrumb = (routes: RoutesInterface[], url: string): any => {
     return (
       routes.find((item) => item.path.indexOf(url) > -1)?.pageName ||
       (routes.find((item) => item.otherPages)
@@ -34,10 +31,10 @@ function App() {
     );
   };
 
-  const createBreadCrumb = (routes: Array<RoutesInterface>, location: Location) => {
+  const createBreadCrumb = (routes: RoutesInterface[], location: Location) => {
     const arr = location.pathname.split("/");
     const url = [];
-    const splitted: Array<string> = Array.from(new Set(arr));
+    const splitted: string[] = Array.from(new Set(arr));
     for (let i = 0; i < splitted.length; i++) {
       if (i === splitted.length - 1) {
         if (splitted[i] === "") {
@@ -73,8 +70,8 @@ function App() {
     // eslint-disable-next-line
   }, [location]);
 
-  const generatePageTree = (tab: Array<RoutesInterface>) =>
-    tab.map((route:RoutesInterface, index:number) => {
+  const generatePageTree = (tab: RoutesInterface[]) =>
+    tab.map((route: RoutesInterface, index: number) => {
       return (
         <React.Fragment key={index}>
           <Route path={route.path} element={route.element} />

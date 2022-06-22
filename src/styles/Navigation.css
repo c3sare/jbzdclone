@@ -13,6 +13,7 @@
   position: absolute;
   top: 100%;
   background-color: #1f1f1f;
+  z-index: -1;
 }
 
 .nav .search > .searchContent {
@@ -25,9 +26,10 @@
 }
 
 .navContent {
-  width: 100%;
+  width: calc(100% - 30px);
   max-width: 1150px;
   margin: 0 auto;
+  padding: 0 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,7 +51,7 @@
   background-color: rgba(255, 255, 255, 0.3);
   border: none !important;
   margin: 2px;
-  padding: 5px 10px;
+  padding: 2px 10px;
   font-size: 18px;
   font-weight: 700;
   display: flex;

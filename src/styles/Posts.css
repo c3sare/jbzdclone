@@ -1,0 +1,11 @@
+.post h2 {
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 0;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+}
+
+.post img {
+  max-width: 100%;
+  height: auto;
+}
