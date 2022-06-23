@@ -56,7 +56,7 @@ const Index = () => {
           <div className="comments">
             {post.comments.map((comment) => (
               <div className="comment">
-                <p>{comment.text}</p>
+                <span>{comment.text}</span>
                 <div className="likes">
                   <button>+</button>
                   <span>{comment.likes}</span>

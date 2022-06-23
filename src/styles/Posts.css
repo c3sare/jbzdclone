@@ -1,3 +1,7 @@
+.posts {
+  width: calc(100% - 300px);
+}
+
 .post h2 {
   background-color: rgba(0, 0, 0, 0.2);
   margin: 0;
@@ -9,3 +13,33 @@
   max-width: 100%;
   height: auto;
 }
+
+.post > .comments > .comment > .likes {
+  font-size: 20px;
+  float: right;
+}
+
+.post > .comments > .comment > .likes > span {
+  margin: 5px;
+}
+
+.post > .comments > .comment > .likes button {
+  border-radius: 5px;
+  background-color: darkred;
+  color: white;
+  font-size: 18px;
+  width: 30px;
+  box-shadow: 1px 1px 3px black;;
+}
+
+.post > .comments > .comment {
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 2px;
+  padding: 5px 15px;
+  width: calc(100% - 34px);
+}
+
+.post > .comments > .comment > p {
+  width: 100%;
+}
+
