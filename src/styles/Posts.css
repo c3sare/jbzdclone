@@ -1,5 +1,6 @@
 .posts {
-  width: calc(100% - 300px);
+  flex: 1 1;
+  display: flex;
 }
 
 .post h2 {
