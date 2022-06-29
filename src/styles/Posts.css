@@ -3,28 +3,43 @@
   display: flex;
 }
 
-.post h2 {
+.post {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+
+.post > .avatar img {
+  width: 40px;
+  height: 40px;
+}
+
+.contentPost a {
+  text-decoration: none;
+}
+
+.contentPost h2 {
   background-color: rgba(0, 0, 0, 0.2);
   margin: 0;
   padding: 5px 10px;
   margin-bottom: 5px;
 }
 
-.post img {
+.contentPost img {
   max-width: 100%;
   height: auto;
 }
 
-.post > .comments > .comment > .likes {
+.contentPost > .comments > .comment > .likes {
   font-size: 20px;
   float: right;
 }
 
-.post > .comments > .comment > .likes > span {
+.contentPost > .comments > .comment > .likes > span {
   margin: 5px;
 }
 
-.post > .comments > .comment > .likes button {
+.contentPost > .comments > .comment > .likes button {
   border-radius: 5px;
   background-color: darkred;
   color: white;
@@ -33,14 +48,14 @@
   box-shadow: 1px 1px 3px black;;
 }
 
-.post > .comments > .comment {
+.contentPost > .comments > .comment {
   background-color: rgba(0, 0, 0, 0.2);
   margin: 2px;
   padding: 5px 15px;
   width: calc(100% - 34px);
 }
 
-.post > .comments > .comment > p {
+.contentPost > .comments > .comment > p {
   width: 100%;
 }
 
