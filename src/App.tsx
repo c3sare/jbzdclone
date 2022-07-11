@@ -12,6 +12,7 @@ interface BreadCrumbsInterface {
 
 function App() {
   let location = useLocation();
+  const pageName = "Jbzd.com.pl";
   const [breadcrumbs, setBreadcrumbs] = useState<BreadCrumbsInterface[]>([]);
 
   const getFullNameOfCrumb = (routes: RoutesInterface[], url: string): any => {
@@ -27,7 +28,7 @@ function App() {
             ],
             url
           )
-        : url)
+        : "404")
     );
   };
 
@@ -62,6 +63,7 @@ function App() {
         }
       }
     }
+    document.title = pageName + " - " + url[url.length - 1].name;
     setBreadcrumbs(url);
   };
 
