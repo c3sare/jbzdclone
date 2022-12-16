@@ -1,6 +1,7 @@
 import MikroBlog from "../routes/MikroBlog";
 import Upload from "../routes/Upload";
 import Index from "../routes/Index";
+import Obr from "../routes/obr/Index";
 import ErrorPage from "../components/ErrorPage";
 import Waitings from "../routes/Waitings";
 
@@ -42,6 +43,12 @@ export const routes: RoutesInterface[] = [
         element: <Upload />,
         otherPages: [],
       },
+      {
+        pageName: "",
+        path: "/obr/:id/:title",
+        element: <Obr/>,
+        otherPages: []
+      }
     ],
   },
   {
