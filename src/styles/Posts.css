@@ -12,6 +12,32 @@
 .post > .avatar img {
   width: 40px;
   height: 40px;
+  margin: 0 8px;
+}
+
+.post > .contentPost > .postHeader {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 5px 10px;
+  margin-bottom: 4px;
+}
+
+.post > .contentPost > .postHeader > h2 {
+  padding: 0;
+  margin: 0;
+}
+
+.post > .contentPost > .postHeader > .iconComments {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.post > .contentPost > .postHeader > .iconComments > svg {
+  margin-right: 6px;
+  opacity: 0.6;
 }
 
 .post > .buttonsPost {
@@ -27,26 +53,136 @@
   margin: 8px 0;
 }
 
-.post > .buttonsPost > .plus {
-  width: 50px;
-  height: 40px;
-  background: linear-gradient(180deg,#c03e3e 0,#b23333 50%,#ac2f2f);
+.post > .buttonsPost > button,
+.post > .buttonsPost > .buttonsCoins > button {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  cursor: pointer;
   border: none;
   border-radius: 3px;
-  color: rgba(255, 255, 255, 0.7);
+  width: 50px;
+  min-height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.post > .buttonsPost > .buttonsCoins > button {
+  opacity: 0.6;
+  padding: 3px;
+  display: block;
+}
+
+.post > .buttonsPost > .buttonsCoins > button:hover {
+  opacity: 1;
+}
+
+.buttonsCoins > button > img {
+  width: 25px;
+  margin-bottom: 5px;
+}
+
+.buttonsCoins > button > span {
+  font-size: 13px;
+  display: flex;
+  font-weight: 700;
+}
+
+.buttonsCoins > button > span > img {
+  width: 14px;
+  height: auto;
+  margin-left: 3px;
+}
+
+.post > .buttonsPost > .coins {
+  background: rgba(255, 255, 255, 0.05);
+  height: 55px;
+}
+
+.post > .buttonsPost > .coins > img {
+  width: 25px;
+}
+
+.post > .buttonsPost > .star.active {
+  color: #f0cc00;
+}
+
+.post > .buttonsPost > .plus {
   font-size: 32px;
-  cursor: pointer;
+  background: linear-gradient(180deg, #c03e3e 0, #b23333 50%, #ac2f2f);
+}
+
+.memDetails {
+  font-size: 12px;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.memDetails > .userAddTimeDetails > .addTime {
+  margin: 0 8px;
+  color: #777;
+}
+
+.otherLikes {
+  display: flex;
+}
+
+.likeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-weight: 700;
+  padding: 0 8px;
+}
+
+.likeContainer > .image {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.likeContainer > .image > img {
+  width: 18px;
+  height: 18px;
+}
+
+.likeContainer > .image > span {
+  display: none;
+  font-size: 11px;
+  position: absolute;
+  padding: 3px 5px;
+  bottom: calc(100% + 6px);
+  background-color: black;
+  left: 50%;
+  font-weight: normal;
+  border-radius: 3px;
+  transform: translateX(-59%);
+}
+
+.likeContainer > .image > span:after {
+  content: "";
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  top: calc(100% - 15px);
+  left: 50%;
+  background-color: black;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: -1;
+}
+
+.likeContainer > .image:hover > span {
+  display: block;
+}
+
+.memDetails > .userAddTimeDetails > .userName {
+  color: rgb(222, 34, 33);
 }
 
 .contentPost a {
   text-decoration: none;
-}
-
-.contentPost h2 {
-  background-color: rgba(0, 0, 0, 0.2);
-  margin: 0;
-  padding: 5px 10px;
-  margin-bottom: 5px;
 }
 
 .contentPost img {
@@ -69,7 +205,7 @@
   color: white;
   font-size: 18px;
   width: 30px;
-  box-shadow: 1px 1px 3px black;;
+  box-shadow: 1px 1px 3px black;
 }
 
 .contentPost > .comments > .comment {
@@ -82,4 +218,3 @@
 .contentPost > .comments > .comment > p {
   width: 100%;
 }
-
