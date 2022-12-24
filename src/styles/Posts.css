@@ -110,6 +110,10 @@
   background: linear-gradient(180deg, #c03e3e 0, #b23333 50%, #ac2f2f);
 }
 
+.post > .buttonsPost > .plus.added {
+  background: linear-gradient(180deg, #94b425 0, #8dac20 50%, #87a61c);
+}
+
 .memDetails {
   font-size: 12px;
   padding: 5px 10px;

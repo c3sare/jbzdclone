@@ -6,6 +6,36 @@ body {
   color: white;
 }
 
+.buttonsMain {
+  max-width: 600px;
+  display: flex;
+  gap: 10px 5px;
+  margin-left: 57px;
+  flex-wrap: nowrap;
+  margin-bottom: 20px;
+}
+
+.buttonsMain > button {
+  cursor: pointer;
+  background: #3c3c3c;
+  border: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  height: 34px;
+  padding: 0 15px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0 10px;
+  position: relative;
+}
+
+.buttonsMain > .addMem {
+  background: #c03e3f;
+}
+
 .errorPage {
   display: block;
   width: 100%;

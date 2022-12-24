@@ -152,6 +152,7 @@ const Post = (props: any) => {
         </button>
         <span>+{post.likes}</span>
         <button className="plus">+</button>
+        {/* class added - active */}
       </div>
     </div>
   );
