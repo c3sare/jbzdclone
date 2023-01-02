@@ -28,7 +28,7 @@ const Post = (props: any) => {
             {post.comments.length}
           </span>
         </div>
-        <p className="memDetails">
+        <div className="memDetails">
           <div className="userAddTimeDetails">
             <span className="userName">{post.userName}</span>
             <span className="addTime">{alongAgo(post.addDate)}</span>
@@ -71,7 +71,7 @@ const Post = (props: any) => {
               <span>{post.gold_like}</span>
             </div>
           </div>
-        </p>
+        </div>
         <img src={post.img} alt={post.title} />
         {/* <div className="comments">
               {post.comments.map((comment) => (

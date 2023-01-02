@@ -2,21 +2,90 @@ import "../styles/AddPost.css";
 import { FaRegImage, FaVideo, FaYoutube, FaTrashAlt } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { categories } from "../data/categories";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { TiUpload } from "react-icons/ti";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const ImageContainer = () => {
-  return (
-    <div className="imageContainer">
+  const [dragActive, setDragActive] = useState(false);
+  const [currentImage, setCurrentImage] = useState<File | null>(null);
+  const ref = useRef<HTMLInputElement>(null);
+  console.log(currentImage);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = function (e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setCurrentImage(e.dataTransfer.files[0]);
+    }
+  };
+
+  const onButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    ref.current!.click();
+  };
+
+  const handleClearImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentImage(null);
+  };
+
+  return currentImage === null ? (
+    <label
+      htmlFor="upload"
+      onDragEnter={(e) => {
+        e.preventDefault();
+        setDragActive(true);
+      }}
+      className="imageContainer"
+    >
       <span>
         <TiUpload />
       </span>
       <span>Przeciągnij tu plik</span>
       <span>lub</span>
-      <button>Przeglądaj</button>
+      <button onClick={onButtonClick}>Przeglądaj</button>
+      <input
+        onDrop={(e) => {
+          e.preventDefault();
+          console.log(e);
+        }}
+        onChange={(e) => setCurrentImage(e.target.files![0])}
+        id="upload"
+        ref={ref}
+        style={{ display: "none" }}
+        type="file"
+        multiple={false}
+      />
+      {dragActive && (
+        <div
+          id="drag-file-element"
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        ></div>
+      )}
+    </label>
+  ) : (
+    <div className="imageContainer">
+      <img src={URL.createObjectURL(currentImage)} alt="Podgląd" />
+      <button onClick={handleClearImage} className="changeImage">
+        Zmień
+      </button>
     </div>
   );
 };
@@ -104,7 +173,7 @@ const AddPost = () => {
           <input placeholder="Wpisz tytuł" type="text" />
         </div>
         {memContainers.map((item, i) => (
-          <div className="memElement">
+          <div className="memElement" key={i}>
             {item}
             <button
               onClick={(e) => {
@@ -152,7 +221,7 @@ const AddPost = () => {
           />
           <div className="tags">
             {tags.map((item, i) => (
-              <span className="tagItem">
+              <span className="tagItem" key={i}>
                 <span className="title">#{item}</span>
                 <button onClick={(e) => handleDeleteTag(e, i)}>
                   <IoClose />
@@ -171,6 +240,7 @@ const AddPost = () => {
             <div>
               {categories[0].map((item, i) => (
                 <button
+                  key={i}
                   className={currentCategory === String(i) ? "active" : ""}
                   onClick={(e) => handleActiveCategory(e, i)}
                 >
@@ -188,6 +258,7 @@ const AddPost = () => {
               <div>
                 {categories[1].map((item, i) => (
                   <button
+                    key={i}
                     className={
                       currentCategory === "10" + String(i) ? "active" : ""
                     }

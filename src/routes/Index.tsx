@@ -34,8 +34,8 @@ const Index = () => {
       </div>
       {currentOption === 1 && options[1]}
       <div className="posts">
-        {posts.map((postMain) => (
-          <Post post={postMain} />
+        {posts.map((postMain, i) => (
+          <Post key={i} post={postMain} />
         ))}
       </div>
     </>
