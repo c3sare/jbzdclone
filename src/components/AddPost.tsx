@@ -2,17 +2,19 @@ import "../styles/AddPost.css";
 import { FaRegImage, FaVideo, FaYoutube, FaTrashAlt } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { categories } from "../data/categories";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { TiUpload } from "react-icons/ti";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-const ImageContainer = () => {
+const ImageContainer = (props: any) => {
+  const { data, setData } = props;
+  const currentImage = data;
+  const setCurrentImage = setData;
   const [dragActive, setDragActive] = useState(false);
-  const [currentImage, setCurrentImage] = useState<File | null>(null);
   const ref = useRef<HTMLInputElement>(null);
-  console.log(currentImage);
+  console.log(data);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -90,17 +92,25 @@ const ImageContainer = () => {
   );
 };
 
-const TextContainer = () => {
-  const [state, setState] = useState("");
-  return <ReactQuill theme="snow" value={state} onChange={setState} />;
+const TextContainer = (props: any) => {
+  const { data, setData } = props;
+  return <ReactQuill theme="snow" value={data} onChange={setData} />;
 };
+
+interface MemElementObject {
+  order: number;
+  id: string;
+  element: any;
+  data: string | File | number;
+  setData: void;
+}
 
 const AddPost = () => {
   const [currentCategory, setCurrentCategory] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [currentTag, setCurrentTag] = useState<string>("");
   const [showLinking, setShowLinking] = useState<boolean>(false);
-  const [memContainers, setMemContainers] = useState<JSX.Element[]>([]);
+  const [memContainers, setMemContainers] = useState<MemElementObject[]>([]);
 
   const handleTagname = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.indexOf(",") < 0) setCurrentTag(e.target.value);
@@ -147,19 +157,42 @@ const AddPost = () => {
     setCurrentCategory("");
   };
 
-  const handleAddImage = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setMemContainers((prev) => {
-      const newState = [...prev, <ImageContainer />];
+  interface Type {
+    [name: string]: any;
+  }
 
-      return newState;
-    });
-  };
-
-  const handleAddText = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddMemItem = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    type: string
+  ) => {
     e.preventDefault();
-    setMemContainers((prev) => {
-      const newState = [...prev, <TextContainer />];
+    const types: Type = {
+      image: ImageContainer,
+      text: TextContainer,
+    };
+    setMemContainers((prev: any) => {
+      const id = Date.now();
+      const newState = [
+        ...prev,
+        {
+          id,
+          order: 0,
+          data: null,
+          setData: (data: any) => {
+            setMemContainers((prevx: any) => {
+              const anotherNewState = [...prevx];
+
+              return anotherNewState.map((item) => {
+                if (item.id === id) {
+                  item.data = data;
+                }
+                return item;
+              });
+            });
+          },
+          element: types[type],
+        },
+      ];
 
       return newState;
     });
@@ -172,31 +205,36 @@ const AddPost = () => {
           <h3>Wpisz tytuł</h3>
           <input placeholder="Wpisz tytuł" type="text" />
         </div>
-        {memContainers.map((item, i) => (
-          <div className="memElement" key={i}>
-            {item}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setMemContainers((prev) => {
-                  const newState = [...prev];
+        {memContainers.map((item, i) => {
+          return (
+            <div className="memElement" key={i}>
+              {React.createElement(item.element, {
+                data: item.data,
+                setData: item.setData,
+              })}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMemContainers((prev) => {
+                    const newState = [...prev];
 
-                  return newState.filter((_el, index) => index !== i);
-                });
-              }}
-            >
-              <FaTrashAlt /> Usuń element
-            </button>
-          </div>
-        ))}
+                    return newState.filter((_el, index) => index !== i);
+                  });
+                }}
+              >
+                <FaTrashAlt /> Usuń element
+              </button>
+            </div>
+          );
+        })}
         <div>
           <h3>Co chcesz dodać?</h3>
           <div className="contentType">
-            <button onClick={handleAddImage}>
+            <button onClick={(e) => handleAddMemItem(e, "image")}>
               <FaRegImage />
               <span>Obrazek/Gif</span>
             </button>
-            <button onClick={handleAddText}>
+            <button onClick={(e) => handleAddMemItem(e, "text")}>
               <IoDocumentText />
               <span>Tekst</span>
             </button>
