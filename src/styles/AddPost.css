@@ -174,6 +174,11 @@
   position: relative;
 }
 
+.imageContainer video {
+  max-width: 100%;
+  height: auto;
+}
+
 .imageContainer > img {
   max-width: 100%;
 }
@@ -201,6 +206,10 @@
   background: #696969;
 }
 
+.memElement {
+  margin-top: 15px;
+}
+
 .memElement > button {
   display: block;
   margin-left: auto;
@@ -224,6 +233,19 @@
 
 button.changeImage {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+  bottom: 15px;
+  right: 10px;
+}
+
+.youtube {
+  background: #1f1f1f;
+  padding: 15px;
+}
+
+.youtube h3 {
+  margin: 0 0 8px 0;
+}
+
+.youtube input {
+  background: #313131!important;
 }

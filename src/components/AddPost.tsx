@@ -2,100 +2,12 @@ import "../styles/AddPost.css";
 import { FaRegImage, FaVideo, FaYoutube, FaTrashAlt } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { categories } from "../data/categories";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { TiUpload } from "react-icons/ti";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-
-const ImageContainer = (props: any) => {
-  const { data, setData } = props;
-  const currentImage = data;
-  const setCurrentImage = setData;
-  const [dragActive, setDragActive] = useState(false);
-  const ref = useRef<HTMLInputElement>(null);
-  console.log(data);
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = function (e: React.DragEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setCurrentImage(e.dataTransfer.files[0]);
-    }
-  };
-
-  const onButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    ref.current!.click();
-  };
-
-  const handleClearImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setCurrentImage(null);
-  };
-
-  return currentImage === null ? (
-    <label
-      htmlFor="upload"
-      onDragEnter={(e) => {
-        e.preventDefault();
-        setDragActive(true);
-      }}
-      className="imageContainer"
-    >
-      <span>
-        <TiUpload />
-      </span>
-      <span>Przeciągnij tu plik</span>
-      <span>lub</span>
-      <button onClick={onButtonClick}>Przeglądaj</button>
-      <input
-        onDrop={(e) => {
-          e.preventDefault();
-          console.log(e);
-        }}
-        onChange={(e) => setCurrentImage(e.target.files![0])}
-        id="upload"
-        ref={ref}
-        style={{ display: "none" }}
-        type="file"
-        multiple={false}
-      />
-      {dragActive && (
-        <div
-          id="drag-file-element"
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        ></div>
-      )}
-    </label>
-  ) : (
-    <div className="imageContainer">
-      <img src={URL.createObjectURL(currentImage)} alt="Podgląd" />
-      <button onClick={handleClearImage} className="changeImage">
-        Zmień
-      </button>
-    </div>
-  );
-};
-
-const TextContainer = (props: any) => {
-  const { data, setData } = props;
-  return <ReactQuill theme="snow" value={data} onChange={setData} />;
-};
+import ImageContainer from "./AddPostComponents/ImageContainer";
+import TextContainer from "./AddPostComponents/TextContainer";
+import VideoContainer from "./AddPostComponents/VideoContainer";
+import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 
 interface MemElementObject {
   order: number;
@@ -169,6 +81,8 @@ const AddPost = () => {
     const types: Type = {
       image: ImageContainer,
       text: TextContainer,
+      video: VideoContainer,
+      youtube: YoutubeContainer
     };
     setMemContainers((prev: any) => {
       const id = Date.now();
@@ -238,11 +152,11 @@ const AddPost = () => {
               <IoDocumentText />
               <span>Tekst</span>
             </button>
-            <button>
+            <button onClick={(e) => handleAddMemItem(e, "video")}>
               <FaVideo />
               <span>Video MP4</span>
             </button>
-            <button>
+            <button onClick={(e) => handleAddMemItem(e, "youtube")}>
               <FaYoutube />
               <span>Youtube</span>
             </button>
