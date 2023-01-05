@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import YouTube from 'react-youtube';
 
 function youtube_parser(url: string){
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -11,18 +12,29 @@ const YoutubeContainer = (props: any) => {
     const [url, setUrl] = useState("");
     
     useEffect(() => {
-        fetch(`https://www.googleapis.com/youtube/v3/videos?part=id&id=${youtube_parser(url)}&key=AIzaSyAOsXSd2jzliEHSsuOiU9CDSQIn9vNzEJE`)
-        .then(data => data.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(err => console.log(err))
+        const vidId = youtube_parser(url);
+        if(vidId !== false)
+            fetch(`https://www.googleapis.com/youtube/v3/videos?part=id&id=${vidId}&key=AIzaSyAOsXSd2jzliEHSsuOiU9CDSQIn9vNzEJE`)
+            .then(data => data.json())
+            .then(data => {
+                if(data.items.length > 0) setData(vidId);
+            })
+            .catch(err => console.log(err));
     }, [url]);
 
     return (
         <div className="youtube">
-            <h3>Link do filmu Youtube</h3>
-            <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Wklej link filmu Youtube"/>
+            {data === null ? 
+                <>
+                    <h3>Link do filmu Youtube</h3>
+                    <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Wklej link filmu Youtube"/>
+                </>
+                :
+                <>
+                    <YouTube opts={{width: "100%", height: "310px"}} videoId={data}/>
+                    <button className="changeVideoBtn" onClick={() => {setUrl(""); setData(null);}}>Zmień</button>
+                </>
+            }
         </div>
     )
 }

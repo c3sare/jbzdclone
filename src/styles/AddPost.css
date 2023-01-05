@@ -231,15 +231,25 @@
   left: 0px;
 }
 
-button.changeImage {
+button.changeImage,
+button.changeVideoBtn {
   position: absolute;
   bottom: 15px;
   right: 10px;
+  background: #505050;
+  color: #fff;
+  font-size: 13px;
+  border: 0;
+  border-radius: 3px;
+  line-height: 34px;
+  padding: 0 15px;
+  cursor: pointer;
 }
 
 .youtube {
   background: #1f1f1f;
   padding: 15px;
+  position: relative;
 }
 
 .youtube h3 {
