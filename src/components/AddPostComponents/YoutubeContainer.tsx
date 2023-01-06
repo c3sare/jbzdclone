@@ -25,6 +25,7 @@ const YoutubeContainer = (props: any) => {
           if (data.items.length > 0) setData(vidId);
         })
         .catch((err) => console.log(err));
+    // eslint-disable-next-line
   }, [url]);
 
   return (
