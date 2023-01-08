@@ -61,11 +61,12 @@
   font-size: 22px;
 }
 
-.addPostContainer .categories button {
+.addPostContainer .categories label {
   background: #505050;
   color: #fff;
   padding: 3px 9px;
   margin: 5px;
+  font-weight: normal;
   border-radius: 3px;
   display: inline-block;
   font-size: 12px;
@@ -73,15 +74,20 @@
   border: none;
 }
 
-.addPostContainer .categories button.active {
+.addPostContainer .categories label.active {
   background: #c03e3e;
 }
 
+.addPostContainer .categories label input {
+  display: none;
+}
+
 .emptyButton {
-  background: transparent !important;
-  border: none !important;
-  color: #6e7578 !important;
-  font-size: 11px !important;
+  background: transparent;
+  border: none;
+  color: #6e7578;
+  font-size: 11px;
+  cursor: pointer;
 }
 
 .tags {
@@ -257,5 +263,5 @@ button.changeVideoBtn {
 }
 
 .youtube input {
-  background: #313131!important;
+  background: #313131 !important;
 }

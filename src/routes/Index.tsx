@@ -8,10 +8,10 @@ import AddPost from "../components/AddPost";
 import TopFilter from "../components/TopFilter";
 import PostFilter from "../components/PostFilter";
 
-const options = [null, <AddPost />, <TopFilter />, <PostFilter />];
-
 const Index = () => {
   const [currentOption, setCurrentOption] = useState<number>(0);
+
+  const options = [null, <AddPost />, <TopFilter />, <PostFilter />];
 
   const setOption = (num: number) => {
     if (num === currentOption) setCurrentOption(0);
@@ -32,7 +32,7 @@ const Index = () => {
           {currentOption === 3 && options[3]}
         </button>
       </div>
-      {currentOption === 1 && options[1]}
+      {currentOption === 1 && <AddPost setOption={setOption} />}
       <div className="posts">
         {posts.map((postMain, i) => (
           <Post key={i} post={postMain} />

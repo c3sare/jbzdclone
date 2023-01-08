@@ -8,32 +8,68 @@ import ImageContainer from "./AddPostComponents/ImageContainer";
 import TextContainer from "./AddPostComponents/TextContainer";
 import VideoContainer from "./AddPostComponents/VideoContainer";
 import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
+import { useForm, useFieldArray } from "react-hook-form";
 
 interface MemElementObject {
   order: number;
   id: string;
-  element: any;
-  data: string | File | number;
+  element: React.FunctionComponent<{
+    data: string | File | number | null;
+    setData: void;
+  }>;
+  data: string | File | number | null;
   setData: void;
 }
 
-const AddPost = () => {
-  const [currentCategory, setCurrentCategory] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+// interface formDataAddPost {
+//   title: string;
+//   tags: string[];
+//   category: number | null;
+// }
+
+const AddPost = (props: any) => {
+  const { setOption } = props;
+
+  const { control, register, handleSubmit, getValues, watch, reset } =
+    useForm();
+  const {
+    fields: fieldsTag,
+    append: appendTag,
+    remove: removeTag,
+  } = useFieldArray({
+    control,
+    name: "tags",
+    rules: {
+      minLength: 1,
+      maxLength: 10,
+    },
+  });
+  const tags = watch("tags");
+  const categoriesWatch = watch("category");
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
+
   const [currentTag, setCurrentTag] = useState<string>("");
   const [showLinking, setShowLinking] = useState<boolean>(false);
   const [memContainers, setMemContainers] = useState<MemElementObject[]>([]);
 
   const handleTagname = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.indexOf(",") < 0) setCurrentTag(e.target.value);
+    if (e.target.value.indexOf(",")) setCurrentTag(e.target.value);
   };
 
   const handleAddTagKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "," || e.key === "Tab") {
       e.preventDefault();
-      if (tags.length >= 10 || tags.indexOf(currentTag) >= 0) return;
+      if (!/^[a-zA-Z0-9]*$/.test(currentTag)) return;
+      if (
+        getValues("tags").length >= 10 ||
+        getValues("tags").indexOf(currentTag) >= 0
+      )
+        return;
       if (currentTag === "") return null;
-      setTags([...tags, currentTag]);
+      appendTag(currentTag);
       setCurrentTag("");
     }
   };
@@ -48,29 +84,17 @@ const AddPost = () => {
     i: number
   ) => {
     e.preventDefault();
-    if (tags.indexOf(currentTag) >= 0) return;
-    setTags((prevState) => {
-      const newState = [...prevState].filter((_item, index) => i !== index);
-      return newState;
-    });
-  };
-
-  const handleActiveCategory = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    i: number,
-    prefix = ""
-  ) => {
-    e.preventDefault();
-    setCurrentCategory(prefix + String(i));
+    if (getValues("tags").indexOf(currentTag) >= 0) return;
+    removeTag(i);
   };
 
   const handleClearCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setCurrentCategory("");
+    reset({ category: null });
   };
 
   interface Type {
-    [name: string]: any;
+    [name: string]: React.FunctionComponent;
   }
 
   const handleAddMemItem = (
@@ -82,7 +106,7 @@ const AddPost = () => {
       image: ImageContainer,
       text: TextContainer,
       video: VideoContainer,
-      youtube: YoutubeContainer
+      youtube: YoutubeContainer,
     };
     setMemContainers((prev: any) => {
       const id = Date.now();
@@ -114,10 +138,18 @@ const AddPost = () => {
 
   return (
     <div className="addPostContainer">
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <h3>Wpisz tytuł</h3>
-          <input placeholder="Wpisz tytuł" type="text" />
+          <input
+            {...register("title", {
+              required: true,
+              minLength: 2,
+              maxLength: 70,
+            })}
+            placeholder="Wpisz tytuł"
+            type="text"
+          />
         </div>
         {memContainers.map((item, i) => {
           return (
@@ -172,9 +204,9 @@ const AddPost = () => {
             onKeyDown={handleAddTagKeys}
           />
           <div className="tags">
-            {tags.map((item, i) => (
-              <span className="tagItem" key={i}>
-                <span className="title">#{item}</span>
+            {fieldsTag.map((item, i) => (
+              <span className="tagItem" key={item.id}>
+                <span className="title">{tags[i]}</span>
                 <button onClick={(e) => handleDeleteTag(e, i)}>
                   <IoClose />
                 </button>
@@ -191,39 +223,62 @@ const AddPost = () => {
             <span className="optional">{"(opcjonalnie)"}</span>
             <div>
               {categories[0].map((item, i) => (
-                <button
+                <label
                   key={i}
-                  className={currentCategory === String(i) ? "active" : ""}
-                  onClick={(e) => handleActiveCategory(e, i)}
+                  className={
+                    Number(categoriesWatch) === i && categoriesWatch !== null
+                      ? "active"
+                      : ""
+                  }
                 >
+                  <input
+                    {...register("category")}
+                    name="category"
+                    type="radio"
+                    value={i}
+                  />
                   {item.name}
-                </button>
+                </label>
               ))}
-              {Number(currentCategory) < 100 && currentCategory !== "" && (
-                <button onClick={handleClearCategory} className="emptyButton">
-                  wyczyść
-                </button>
-              )}
+              {categoriesWatch! < categories[0].length &&
+                categoriesWatch !== null && (
+                  <button onClick={handleClearCategory} className="emptyButton">
+                    wyczyść
+                  </button>
+                )}
             </div>
             <div>
               <span style={{ fontSize: "12px", color: "#de2127" }}>nsfw:</span>
               <div>
                 {categories[1].map((item, i) => (
-                  <button
+                  <label
                     key={i}
                     className={
-                      currentCategory === "10" + String(i) ? "active" : ""
+                      Number(categoriesWatch) ===
+                        Number(i + categories[0].length) &&
+                      categoriesWatch !== null
+                        ? "active"
+                        : ""
                     }
-                    onClick={(e) => handleActiveCategory(e, i, "10")}
                   >
+                    <input
+                      {...register("category")}
+                      name="category"
+                      type="radio"
+                      value={categories[0].length + i}
+                    />
                     {item.name}
-                  </button>
+                  </label>
                 ))}
-                {Number(currentCategory) >= 100 && currentCategory !== "" && (
-                  <button onClick={handleClearCategory} className="emptyButton">
-                    wyczyść
-                  </button>
-                )}
+                {categoriesWatch! >= categories[0].length &&
+                  categoriesWatch !== null && (
+                    <button
+                      onClick={handleClearCategory}
+                      className="emptyButton"
+                    >
+                      wyczyść
+                    </button>
+                  )}
               </div>
             </div>
             <div className="linking">
@@ -235,8 +290,17 @@ const AddPost = () => {
           </h3>
         </div>
         <div className="addCancelButtons">
-          <button className="submit">Dodaj</button>
-          <button>Anuluj</button>
+          <button className="submit" type="submit">
+            Dodaj
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setOption(0);
+            }}
+          >
+            Anuluj
+          </button>
         </div>
       </form>
     </div>
