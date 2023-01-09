@@ -2,13 +2,12 @@ import { TiUpload } from "react-icons/ti";
 import React, {useRef, useState} from "react";
 
 const VideoContainer = (props: any) => {
-    const { data, setData } = props;
+    const { data, setData, index } = props;
     const currentImage = data;
     const setCurrentImage = setData;
     const [dragActive, setDragActive] = useState(false);
     const [preview, setPreview] = useState<any>(null)
     const ref = useRef<HTMLInputElement>(null);
-    console.log(data);
   
     const handleDrag = (e: React.DragEvent) => {
       e.preventDefault();
@@ -26,7 +25,7 @@ const VideoContainer = (props: any) => {
       setDragActive(false);
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
         if(["video/mp4"].includes(e.dataTransfer.files[0].type))
-            setCurrentImage(e.dataTransfer.files[0]);
+            setCurrentImage(e.dataTransfer.files[0], index);
             previewFile(e.dataTransfer.files[0]);
       }
     };
@@ -38,13 +37,13 @@ const VideoContainer = (props: any) => {
   
     const handleClearImage = (e: React.MouseEvent) => {
       e.preventDefault();
-      setCurrentImage(null);
+      setCurrentImage(null, index);
       setPreview(null);
     };
 
     const handleOnChangeImage = (e:React.ChangeEvent<HTMLInputElement>) => {
         if(["video/mp4"].includes(e.target.files![0].type))
-            setCurrentImage(e.target.files![0]);
+            setCurrentImage(e.target.files![0], index);
             previewFile(e.target.files![0]);
     }
 
@@ -77,7 +76,6 @@ const VideoContainer = (props: any) => {
         <input
           onDrop={(e) => {
             e.preventDefault();
-            console.log(e);
           }}
           onChange={handleOnChangeImage}
           id="upload"

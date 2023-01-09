@@ -10,8 +10,7 @@ function youtube_parser(url: string) {
 }
 
 const YoutubeContainer = (props: any) => {
-  console.log(process.env.YOUTUBE_API);
-  const { data, setData } = props;
+  const { data, setData, index } = props;
   const [url, setUrl] = useState("");
 
   useEffect(() => {
@@ -22,7 +21,7 @@ const YoutubeContainer = (props: any) => {
       )
         .then((data) => data.json())
         .then((data) => {
-          if (data.items.length > 0) setData(vidId);
+          if (data.items.length > 0) setData(vidId, index);
         })
         .catch((err) => console.log(err));
     // eslint-disable-next-line
@@ -47,7 +46,7 @@ const YoutubeContainer = (props: any) => {
             className="changeVideoBtn"
             onClick={() => {
               setUrl("");
-              setData(null);
+              setData(null, index);
             }}
           >
             Zmień

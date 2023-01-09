@@ -4,33 +4,28 @@ import { IoDocumentText } from "react-icons/io5";
 import { categories } from "../data/categories";
 import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { BiMove } from "react-icons/bi";
 import ImageContainer from "./AddPostComponents/ImageContainer";
 import TextContainer from "./AddPostComponents/TextContainer";
 import VideoContainer from "./AddPostComponents/VideoContainer";
 import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
 
-interface MemElementObject {
-  order: number;
-  id: string;
-  element: React.FunctionComponent<{
-    data: string | File | number | null;
-    setData: void;
-  }>;
-  data: string | File | number | null;
-  setData: void;
-}
-
-// interface formDataAddPost {
-//   title: string;
-//   tags: string[];
-//   category: number | null;
+// interface MemElementObject {
+//   order: number;
+//   id: string;
+//   element: React.FunctionComponent<{
+//     data: string | File | number | null;
+//     setData: void;
+//   }>;
+//   data: string | File | number | null;
+//   setData: void;
 // }
 
 const AddPost = (props: any) => {
   const { setOption } = props;
 
-  const { control, register, handleSubmit, getValues, watch, reset } =
+  const { control, register, handleSubmit, getValues, watch, reset, setValue, formState: { errors } } =
     useForm();
   const {
     fields: fieldsTag,
@@ -40,20 +35,39 @@ const AddPost = (props: any) => {
     control,
     name: "tags",
     rules: {
+      required: "Wymagane!",
       minLength: 1,
       maxLength: 10,
     },
   });
+  const {
+    fields: fieldsMemContainers,
+    append: appendMemContainer,
+    remove: removeMemContainer,
+  } = useFieldArray({
+    control,
+    name: "memContainers",
+    rules: {
+      required: "Wymagane!",
+      minLength: 1,
+      maxLength: 10,
+      validate: (val:any) => {
+        return val.filter((item:any) => item.data === null).length === 0;
+      }
+      
+    },
+  });
+
   const tags = watch("tags");
   const categoriesWatch = watch("category");
+  const memContainers = watch("memContainers");
+  const linking = watch("linking");
 
   const onSubmit = (data: any) => {
     console.log(data);
   };
-
+  console.log(errors);
   const [currentTag, setCurrentTag] = useState<string>("");
-  const [showLinking, setShowLinking] = useState<boolean>(false);
-  const [memContainers, setMemContainers] = useState<MemElementObject[]>([]);
 
   const handleTagname = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.indexOf(",")) setCurrentTag(e.target.value);
@@ -72,11 +86,6 @@ const AddPost = (props: any) => {
       appendTag(currentTag);
       setCurrentTag("");
     }
-  };
-
-  const handleToggleLinking = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setShowLinking(!showLinking);
   };
 
   const handleDeleteTag = (
@@ -108,31 +117,13 @@ const AddPost = (props: any) => {
       video: VideoContainer,
       youtube: YoutubeContainer,
     };
-    setMemContainers((prev: any) => {
-      const id = Date.now();
-      const newState = [
-        ...prev,
-        {
-          id,
-          order: 0,
-          data: null,
-          setData: (data: any) => {
-            setMemContainers((prevx: any) => {
-              const anotherNewState = [...prevx];
-
-              return anotherNewState.map((item) => {
-                if (item.id === id) {
-                  item.data = data;
-                }
-                return item;
-              });
-            });
-          },
-          element: types[type],
-        },
-      ];
-
-      return newState;
+    appendMemContainer({
+      order: 0,
+      data: null,
+      setData: (data: any, index:number) => {
+        setValue(`memContainers.${index}.data`, data);
+      },
+      element: types[type],
     });
   };
 
@@ -143,33 +134,31 @@ const AddPost = (props: any) => {
           <h3>Wpisz tytuł</h3>
           <input
             {...register("title", {
-              required: true,
+              required: "To pole jest wymagane!",
               minLength: 2,
               maxLength: 70,
             })}
             placeholder="Wpisz tytuł"
             type="text"
           />
+          {/* {
+            errors.title?.message &&
+              <span className="error">{errors.title?.message}</span>
+          } */}
         </div>
-        {memContainers.map((item, i) => {
+        {fieldsMemContainers.map((item:any, i:number) => {
           return (
-            <div className="memElement" key={i}>
-              {React.createElement(item.element, {
-                data: item.data,
-                setData: item.setData,
-              })}
+            <div className="memElement" key={item.id}>
+              <item.element data={memContainers[i].data} setData={memContainers[i].setData} index={i}/>
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  setMemContainers((prev) => {
-                    const newState = [...prev];
-
-                    return newState.filter((_el, index) => index !== i);
-                  });
+                  removeMemContainer(i);
                 }}
               >
                 <FaTrashAlt /> Usuń element
               </button>
+              <button className="moveButton"><BiMove/></button>
             </div>
           );
         })}
@@ -282,10 +271,11 @@ const AddPost = (props: any) => {
               </div>
             </div>
             <div className="linking">
-              <button onClick={handleToggleLinking}>
-                {!showLinking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
-              </button>
-              {showLinking && <input placeholder="Wpisz link" type="url" />}
+              <label>
+                <input type="checkbox" {...register("linking")} defaultChecked={false}/>
+                {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
+              </label>
+              {linking && <input placeholder="Wpisz link" type="url" {...register("linkingUrl")} />}
             </div>
           </h3>
         </div>

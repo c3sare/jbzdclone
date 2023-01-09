@@ -2,12 +2,11 @@ import { TiUpload } from "react-icons/ti";
 import {useRef, useState} from "react";
 
 const ImageContainer = (props: any) => {
-    const { data, setData } = props;
+    const { data, setData, index } = props;
     const currentImage = data;
     const setCurrentImage = setData;
     const [dragActive, setDragActive] = useState(false);
     const ref = useRef<HTMLInputElement>(null);
-    console.log(data);
   
     const handleDrag = (e: React.DragEvent) => {
       e.preventDefault();
@@ -25,7 +24,7 @@ const ImageContainer = (props: any) => {
         setDragActive(false);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
           if(["image/png", "image/jpg", "images/jpeg"].includes(e.dataTransfer.files[0].type))
-              setCurrentImage(e.dataTransfer.files[0]);
+              setCurrentImage(e.dataTransfer.files[0], index);
         }
       };
     
@@ -36,12 +35,12 @@ const ImageContainer = (props: any) => {
     
       const handleClearImage = (e: React.MouseEvent) => {
         e.preventDefault();
-        setCurrentImage(null);
+        setCurrentImage(null, index);
       };
   
       const handleOnChangeImage = (e:React.ChangeEvent<HTMLInputElement>) => {
           if(["image/png", "image/jpg", "images/jpeg"].includes(e.target.files![0].type))
-              setCurrentImage(e.target.files![0]);
+              setCurrentImage(e.target.files![0], index);
       }
   
     return currentImage === null ? (
@@ -62,7 +61,6 @@ const ImageContainer = (props: any) => {
         <input
           onDrop={(e) => {
             e.preventDefault();
-            console.log(e);
           }}
           onChange={handleOnChangeImage}
           id="upload"
