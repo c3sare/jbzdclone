@@ -25,8 +25,16 @@ import { useForm, useFieldArray } from "react-hook-form";
 const AddPost = (props: any) => {
   const { setOption } = props;
 
-  const { control, register, handleSubmit, getValues, watch, reset, setValue, formState: { errors } } =
-    useForm();
+  const {
+    control,
+    register,
+    handleSubmit,
+    getValues,
+    watch,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm();
   const {
     fields: fieldsTag,
     append: appendTag,
@@ -35,7 +43,7 @@ const AddPost = (props: any) => {
     control,
     name: "tags",
     rules: {
-      required: "Wymagane!",
+      required: "Dodaj przynajmniej jeden tag!",
       minLength: 1,
       maxLength: 10,
     },
@@ -48,13 +56,12 @@ const AddPost = (props: any) => {
     control,
     name: "memContainers",
     rules: {
-      required: "Wymagane!",
+      required: "Przynajmniej jeden element jest wymagany!",
       minLength: 1,
       maxLength: 10,
-      validate: (val:any) => {
-        return val.filter((item:any) => item.data === null).length === 0;
-      }
-      
+      validate: (val: any) => {
+        return val.filter((item: any) => item.data === null).length === 0;
+      },
     },
   });
 
@@ -120,7 +127,7 @@ const AddPost = (props: any) => {
     appendMemContainer({
       order: 0,
       data: null,
-      setData: (data: any, index:number) => {
+      setData: (data: any, index: number) => {
         setValue(`memContainers.${index}.data`, data);
       },
       element: types[type],
@@ -141,15 +148,18 @@ const AddPost = (props: any) => {
             placeholder="Wpisz tytuł"
             type="text"
           />
-          {/* {
-            errors.title?.message &&
-              <span className="error">{errors.title?.message}</span>
-          } */}
+          {errors?.title && (
+            <p className="error">{String(errors.title?.message)}</p>
+          )}
         </div>
-        {fieldsMemContainers.map((item:any, i:number) => {
+        {fieldsMemContainers.map((item: any, i: number) => {
           return (
             <div className="memElement" key={item.id}>
-              <item.element data={memContainers[i].data} setData={memContainers[i].setData} index={i}/>
+              <item.element
+                data={memContainers[i].data}
+                setData={memContainers[i].setData}
+                index={i}
+              />
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -158,7 +168,9 @@ const AddPost = (props: any) => {
               >
                 <FaTrashAlt /> Usuń element
               </button>
-              <button className="moveButton"><BiMove/></button>
+              <button className="moveButton">
+                <BiMove />
+              </button>
             </div>
           );
         })}
@@ -182,6 +194,11 @@ const AddPost = (props: any) => {
               <span>Youtube</span>
             </button>
           </div>
+          {errors?.memContainers && (
+            <p className="error">
+              {String(errors.memContainers?.root?.message)}
+            </p>
+          )}
         </div>
         <div>
           <h3>Dodaj tagi</h3>
@@ -202,6 +219,9 @@ const AddPost = (props: any) => {
               </span>
             ))}
           </div>
+          {errors?.tags && (
+            <p className="error">{String(errors.tags?.root?.message)}</p>
+          )}
           <span className="info">
             Aby dodać kolejny tag należy dodać przecinek albo nacisnąć TAB.
           </span>
@@ -272,10 +292,20 @@ const AddPost = (props: any) => {
             </div>
             <div className="linking">
               <label>
-                <input type="checkbox" {...register("linking")} defaultChecked={false}/>
+                <input
+                  type="checkbox"
+                  {...register("linking")}
+                  defaultChecked={false}
+                />
                 {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
               </label>
-              {linking && <input placeholder="Wpisz link" type="url" {...register("linkingUrl")} />}
+              {linking && (
+                <input
+                  placeholder="Wpisz link"
+                  type="url"
+                  {...register("linkingUrl")}
+                />
+              )}
             </div>
           </h3>
         </div>
