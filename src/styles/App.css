@@ -45,3 +45,25 @@
   transform: translate(-50%);
   flex-direction: column;
 }
+
+.preview {
+  display: flex;
+  width: 100%;
+  font-size: 11px;
+}
+
+.preview > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview > div:nth-child(2) {
+  width: calc(100% - 150px);
+  overflow: hidden;
+}
+
+.preview img {
+  max-width: 150px;
+  height:auto;
+}

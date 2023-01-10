@@ -10,6 +10,17 @@ import TextContainer from "./AddPostComponents/TextContainer";
 import VideoContainer from "./AddPostComponents/VideoContainer";
 import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
+import CheckUrl from "./AddPostComponents/CheckUrl";
+
+function isValidHttpUrl(link:string) {
+  let url;
+  try {
+    url = new URL(link);
+  } catch (_) {
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
 
 // interface MemElementObject {
 //   order: number;
@@ -24,6 +35,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 
 const AddPost = (props: any) => {
   const { setOption } = props;
+  const [prevUrl, setPrevUrl] = useState<string | null>(null);
 
   const {
     control,
@@ -300,11 +312,16 @@ const AddPost = (props: any) => {
                 {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
               </label>
               {linking && (
-                <input
-                  placeholder="Wpisz link"
-                  type="url"
-                  {...register("linkingUrl")}
-                />
+                prevUrl === null ?
+                  <input
+                    placeholder="Wpisz link"
+                    type="url"
+                    onChange={(e) => {
+                      if(isValidHttpUrl(e.target.value)) setPrevUrl(e.target.value);
+                    }}
+                  />
+                :
+                  <CheckUrl data={prevUrl}/>
               )}
             </div>
           </h3>
