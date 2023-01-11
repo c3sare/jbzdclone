@@ -2,7 +2,7 @@ import "../styles/AddPost.css";
 import { FaRegImage, FaVideo, FaYoutube, FaTrashAlt } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { categories } from "../data/categories";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { BiMove } from "react-icons/bi";
 import ImageContainer from "./AddPostComponents/ImageContainer";
@@ -12,7 +12,7 @@ import YoutubeContainer from "./AddPostComponents/YoutubeContainer";
 import { useForm, useFieldArray } from "react-hook-form";
 import CheckUrl from "./AddPostComponents/CheckUrl";
 
-function isValidHttpUrl(link:string) {
+function isValidHttpUrl(link: string) {
   let url;
   try {
     url = new URL(link);
@@ -22,24 +22,13 @@ function isValidHttpUrl(link:string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-// interface MemElementObject {
-//   order: number;
-//   id: string;
-//   element: React.FunctionComponent<{
-//     data: string | File | number | null;
-//     setData: void;
-//   }>;
-//   data: string | File | number | null;
-//   setData: void;
-// }
-
 const AddPost = (props: any) => {
   const { setOption } = props;
-  const [prevUrl, setPrevUrl] = useState<string | null>(null);
 
   const {
     control,
     register,
+    unregister,
     handleSubmit,
     getValues,
     watch,
@@ -82,10 +71,23 @@ const AddPost = (props: any) => {
   const memContainers = watch("memContainers");
   const linking = watch("linking");
 
+  useEffect(() => {
+    if (linking) {
+      register("linkingUrl", { required: "To pole jest wymagane" });
+    } else unregister("linkingUrl");
+    // eslint-disable-next-line
+  }, [linking]);
+
+  const linkingUrl = watch("linkingUrl");
+
+  const setLinkingUrl = (url: string) => {
+    setValue("linkingUrl", url);
+  };
+
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log(errors);
+
   const [currentTag, setCurrentTag] = useState<string>("");
 
   const handleTagname = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -311,18 +313,19 @@ const AddPost = (props: any) => {
                 />
                 {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
               </label>
-              {linking && (
-                prevUrl === null ?
+              {linking &&
+                (linkingUrl === undefined ? (
                   <input
                     placeholder="Wpisz link"
                     type="url"
                     onChange={(e) => {
-                      if(isValidHttpUrl(e.target.value)) setPrevUrl(e.target.value);
+                      if (isValidHttpUrl(e.target.value))
+                        setValue("linkingUrl", e.target.value);
                     }}
                   />
-                :
-                  <CheckUrl data={prevUrl}/>
-              )}
+                ) : (
+                  <CheckUrl data={linkingUrl} setData={setLinkingUrl} />
+                ))}
             </div>
           </h3>
         </div>

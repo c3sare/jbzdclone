@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import process from "process";
 import YouTube from "react-youtube";
 
 function youtube_parser(url: string) {
@@ -16,12 +15,10 @@ const YoutubeContainer = (props: any) => {
   useEffect(() => {
     const vidId = youtube_parser(url);
     if (vidId !== false)
-      fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=id&id=${vidId}&key=${process.env.REACT_APP_YOUTUBE_API}`
-      )
+      fetch(`http://localhost:8000/youtubevideo/${vidId}`)
         .then((data) => data.json())
         .then((data) => {
-          if (data.items.length > 0) setData(vidId, index);
+          if (data.videoExist) setData(vidId, index);
         })
         .catch((err) => console.log(err));
     // eslint-disable-next-line
