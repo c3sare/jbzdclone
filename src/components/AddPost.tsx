@@ -24,6 +24,7 @@ function isValidHttpUrl(link: string) {
 
 const AddPost = (props: any) => {
   const { setOption } = props;
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -70,19 +71,24 @@ const AddPost = (props: any) => {
   const categoriesWatch = watch("category");
   const memContainers = watch("memContainers");
   const linking = watch("linking");
+  const linkingCustomImage = watch("linkingCustomImage");
 
   useEffect(() => {
     if (linking) {
       register("linkingUrl", { required: "To pole jest wymagane" });
-    } else unregister("linkingUrl");
+    } else {
+      unregister("linkingUrl");
+      unregister("linkingCustomImage");
+    }
     // eslint-disable-next-line
   }, [linking]);
 
   const linkingUrl = watch("linkingUrl");
 
-  const setLinkingUrl = (url: string) => {
-    setValue("linkingUrl", url);
-  };
+  useEffect(() => {
+    if (linking) if (linkingCustomImage) setValue("linkingCustomImage", []);
+    // eslint-disable-next-line
+  }, [linkingUrl]);
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -313,19 +319,36 @@ const AddPost = (props: any) => {
                 />
                 {!linking ? "Pokaż linkowanie" : "Schowaj linkowanie"}
               </label>
-              {linking &&
-                (linkingUrl === undefined ? (
+              {linking && (
+                <>
                   <input
                     placeholder="Wpisz link"
                     type="url"
-                    onChange={(e) => {
-                      if (isValidHttpUrl(e.target.value))
+                    onBlur={(e) => {
+                      if (
+                        isValidHttpUrl(e.target.value) ||
+                        e.target.value === ""
+                      ) {
+                        if (e.target.value !== "") setLoading(true);
                         setValue("linkingUrl", e.target.value);
+                      }
                     }}
                   />
-                ) : (
-                  <CheckUrl data={linkingUrl} setData={setLinkingUrl} />
-                ))}
+                  {errors.linkingUrl?.message && (
+                    <p className="error">
+                      {String(errors.linkingUrl?.message)}
+                    </p>
+                  )}
+                  {linkingUrl !== undefined && (
+                    <CheckUrl
+                      setLoading={setLoading}
+                      data={linkingUrl}
+                      register={register}
+                      linkingCustomImage={linkingCustomImage}
+                    />
+                  )}
+                </>
+              )}
             </div>
           </h3>
         </div>
@@ -342,6 +365,16 @@ const AddPost = (props: any) => {
             Anuluj
           </button>
         </div>
+        {loading && (
+          <div className="loading">
+            <div className="lds-ring">
+              <div />
+              <div />
+              <div />
+              <div />
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );
